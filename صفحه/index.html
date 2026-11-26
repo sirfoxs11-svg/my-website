@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>صفحة الدخول</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ffe6eb, #fff5f7);
+      overflow: hidden; /* لمنع ظهور شريط تمرير بسبب القلوب المتحركة */
+      position: relative;
+    }
+
+    /* حاوية القلوب المتحركة في الخلفية */
+    .hearts-background {
+      position: fixed;
+      inset: 0;
+      pointer-events: none; /* عشان القلوب متمنعش الضغط على الزر أو حقل الكتابة */
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .heart {
+      position: absolute;
+      bottom: -60px;
+      color: rgba(231, 76, 118, 0.35);
+      animation: floatUp linear infinite;
+      user-select: none;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(0.8) rotate(0deg);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+      }
+      85% {
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateY(-110vh) scale(1.15) rotate(20deg);
+        opacity: 0;
+      }
+    }
+
+    /* الصندوق الموجود في منتصف الصفحة */
+    .center-box {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(8px);
+      padding: 36px 28px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(214, 51, 108, 0.15);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      border: 1px solid rgba(255, 182, 193, 0.5);
+    }
+
+    .center-box h1 {
+      color: #c9184a;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .center-box p {
+      color: #6c757d;
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    .center-box input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 2px solid #ffc2d1;
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+      margin-bottom: 14px;
+      text-align: center;
+      transition: border-color 0.25s;
+    }
+
+    .center-box input:focus {
+      border-color: #ff4d6d;
+    }
+
+    .center-box button {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 12px;
+      background: #ff4d6d;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.25s, transform 0.15s;
+    }
+
+    .center-box button:hover {
+      background: #e01e37;
+    }
+
+    .center-box button:active {
+      transform: scale(0.98);
+    }
+
+    #errorMsg {
+      color: #d90429;
+      font-size: 14px;
+      margin-top: 12px;
+      min-height: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- القلوب المتحركة في الخلفية -->
+  <div class="hearts-background" id="heartsBg"></div>
+
+  <!-- المحتوى في منتصف الصفحة -->
+  <main class="center-box">
+    <h1>WELCOM ♥</h1>
+    <p>i miss youuu</p>
+
+    <form id="accessForm">
+      <input
+        type="text"
+        id="secretWord"
+        placeholder="اكتب اسمك هنا..."
+        autocomplete="off"
+        required
+      />
+      <button type="submit">دخول</button>
+    </form>
+
+    <p id="errorMsg"></p>
+  </main>
+
+  <script>
+  
+
+    // =========================================================
+    // المكان الأساسي لربط الكلمات بالصفحة التانية الخاصة بيك:
+    // غيّر "الكلمة" وغيّر اسم/مسار الصفحة التانية حسب ملفاتك
+    // =========================================================
+    const pagesMap = {
+      "ملك": "جديد2.html",          // <-- اربط صفحتك التانية هنا
+      "love": "page2.html",         // <-- تقدر تربط أكتر من كلمة بنفس الصفحة
+      "مفاجأة": "surprise.html"     // <-- أو تربط كلمة تانية بصفحة مختلفة
+    };
+
+    const form = document.getElementById("accessForm");
+    const input = document.getElementById("secretWord");
+    const errorMsg = document.getElementById("errorMsg");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      const enteredWord = input.value.trim().toLowerCase();
+
+      if (pagesMap[enteredWord]) {
+        // التوجيه الفعلي للصفحة التانية
+        window.location.href = pagesMap[enteredWord];
+      } else {
+        errorMsg.textContent = "الكلمة غير صحيحة، جرّب مرة أخرى.";
+      }
+    });
+
+    // توليد قلوب متحركة متعددة في الخلفية بشكل عشوائي
+    const heartsBg = document.getElementById("heartsBg");
+    const heartsCount = 22;
+
+    for (let i = 0; i < heartsCount; i++) {
+      const heart = document.createElement("span");
+      heart.classList.add("heart");
+      heart.textContent = "♥";
+
+      // عشوائية المكان والسرعة والحجم والتأخير
+      heart.style.left = Math.random() * 100 + "%";
+      heart.style.fontSize = (18 + Math.random() * 28) + "px";
+      const duration = 6 + Math.random() * 7; // من 6 إلى 13 ثانية
+      heart.style.animationDuration = duration + "s";
+      heart.style.animationDelay = (Math.random() * duration) + "s";
+
+      heartsBg.appendChild(heart);
+    }
+  </script>
+
+</body>
+</html>
